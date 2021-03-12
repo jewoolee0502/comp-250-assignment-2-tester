@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import assignment2.Deck.Joker;
 
 // Official tests
 // ==========================================================================================
@@ -1338,6 +1339,29 @@ class Deck_locate_joker_no_jokers implements Runnable {
     if (resultingBlackJoker != expectedBlackJoker) {
       throw new AssertionError("deck.locateJoker(\"black\") returned " + resultingBlackJoker
           + " but expected " + expectedBlackJoker);
+    }
+
+    System.out.println("Test passed.");
+  }
+}
+
+
+class Deck_locate_joker_wrong_color implements Runnable {
+
+  @Override
+  public void run() {
+    Deck deck = new Deck(10, 2);
+    Joker result;
+    try {
+      result = deck.locateJoker("green");
+    } catch (Throwable t) {
+      throw new AssertionError(
+          "deck.locateJoker(\"green\") threw an exception, but should return null");
+    }
+
+    if (result != null) {
+      throw new AssertionError(
+          "deck.locateJoker(\"green\") returned " + result + ", but expected null");
     }
 
     System.out.println("Test passed.");
@@ -2695,6 +2719,7 @@ public class Tester {
       "assignment2.Deck_locate_joker",
       "assignment2.Deck_locate_joker_top_or_bottom_cards",
       "assignment2.Deck_locate_joker_no_jokers",
+      "assignment2.Deck_locate_joker_wrong_color",
       "assignment2.Deck_move_card_no_change",
       "assignment2.Deck_move_card_with_change",
       "assignment2.Deck_move_card_loop_around",
@@ -2800,20 +2825,25 @@ public class Tester {
   }
 
   /**
-   * Converts the given deck to a String, with one space between each card.
+   * Converts the given deck to a String, with one space between each card. If
+   * numOfCards is 0 or deck.head is null, "-" is returned.
    * 
    * @param deck The deck to be converted to String
    * @return A string listing all cards, separated by spaces
    */
   public static String deckToString(Deck deck) {
-    String out = "";
-    Deck.Card currentCard = deck.head;
-
-    for (int i = 0; i < deck.numOfCards; i++) {
-      out += currentCard.toString() + " ";
-      currentCard = currentCard.next;
+    // Empty deck
+    if (deck.numOfCards == 0 || deck.head == null)
+      return "-";
+    // Non-empty deck
+    else {
+      String out = "";
+      Deck.Card currentCard = deck.head;
+      for (int i = 0; i < deck.numOfCards; i++) {
+        out += currentCard.toString() + " ";
+        currentCard = currentCard.next;
+      }
+      return out.substring(0, out.length() - 1);
     }
-
-    return out.substring(0, out.length() - 1);
   }
 }
